@@ -70,7 +70,7 @@ export function SynthesisForm() {
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="annale_ref">Annale</Label>
-            <Input id="annale_ref" name="annale_ref" placeholder="EST25 — session 1" />
+            <Input id="annale_ref" name="annale_ref" placeholder="EST25 - session 1" />
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="feeling">Ressenti (/10)</Label>

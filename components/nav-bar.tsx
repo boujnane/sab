@@ -1,10 +1,18 @@
 import Link from "next/link";
 
+import { isAdminEmail } from "@/lib/admin";
 import { signOut } from "@/lib/actions/auth";
+import { createClient } from "@/lib/supabase/server";
 import { AppLineSidebar } from "@/components/app-line-sidebar";
 import { AppMobileNav } from "@/components/app-mobile-nav";
 
-export function NavBar() {
+export async function NavBar() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const showAdmin = isAdminEmail(user?.email);
+
   return (
     <>
       <header className="px-4 py-4 sm:px-6 md:hidden">
@@ -22,7 +30,7 @@ export function NavBar() {
           </form>
         </div>
       </header>
-      <AppMobileNav />
+      <AppMobileNav showAdmin={showAdmin} />
 
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-48 px-6 py-8 md:grid md:grid-rows-[auto_1fr_auto]">
         <Link href="/" className="font-display text-lg italic text-plum-950">
@@ -30,7 +38,7 @@ export function NavBar() {
         </Link>
 
         <div className="mt-10">
-          <AppLineSidebar />
+          <AppLineSidebar showAdmin={showAdmin} />
         </div>
 
         <form action={signOut} className="pb-8">

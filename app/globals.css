@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 /*
-  Beranis — design tokens.
+  Beranis - design tokens.
   3 gammes seulement : plum (structure), petale (accent), ciel (informatif).
   Les gammes "baby-pink" et "icy-blue" de la palette source sont des doublons
   volontairement écartés. Aucun gris Tailwind ne doit apparaître dans l'app.
 */
 @theme {
-  /* plum — ex-thistle : structure, texte, surfaces, bordures */
+  /* plum - ex-thistle : structure, texte, surfaces, bordures */
   --color-plum-50: #f3eef7;
   --color-plum-100: #e8ddee;
   --color-plum-200: #d1bade;
@@ -20,7 +20,7 @@
   --color-plum-900: #1c1122;
   --color-plum-950: #140c18;
 
-  /* petale — ex-pastel-petal : accent unique, actions, "réel" */
+  /* petale - ex-pastel-petal : accent unique, actions, "réel" */
   --color-petale-50: #ffe5ef;
   --color-petale-100: #ffcce0;
   --color-petale-200: #ff99c0;
@@ -33,7 +33,7 @@
   --color-petale-900: #330014;
   --color-petale-950: #24000e;
 
-  /* ciel — ex-sky-blue : informatif (jalons, théorique), jamais une action */
+  /* ciel - ex-sky-blue : informatif (jalons, théorique), jamais une action */
   --color-ciel-50: #e5f3ff;
   --color-ciel-100: #cce6ff;
   --color-ciel-200: #99ceff;
@@ -46,6 +46,17 @@
   --color-ciel-900: #001a33;
   --color-ciel-950: #001224;
 
+  /* sauge - extension unique pour le quiz : "réponse juste". Vert désaturé
+     calé sur la gamme plum ; nulle part ailleurs dans l'app. */
+  --color-sauge-50: #eef5ee;
+  --color-sauge-100: #dcecdc;
+  --color-sauge-200: #b7d8b8;
+  --color-sauge-300: #8fc092;
+  --color-sauge-500: #4c9153;
+  --color-sauge-600: #3a7742;
+  --color-sauge-700: #2d5c34;
+  --color-sauge-800: #1e3f24;
+
   /* neutralisation : les gris Tailwind sont retirés du vocabulaire */
   --color-gray-*: initial;
   --color-slate-*: initial;
@@ -53,7 +64,7 @@
   --color-neutral-*: initial;
   --color-stone-*: initial;
 
-  /* typo — familles injectées par next/font via variables */
+  /* typo - familles injectées par next/font via variables */
   --font-display: var(--font-instrument-serif), Georgia, serif;
   --font-sans: var(--font-instrument-sans), system-ui, sans-serif;
   --font-mono: var(--font-spline-mono), ui-monospace, monospace;
@@ -101,7 +112,7 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Focus clavier — unique style de focus de l'app */
+/* Focus clavier - unique style de focus de l'app */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
@@ -122,6 +133,33 @@ body {
   from {
     width: 0%;
   }
+}
+
+/* Quiz : entrée d'une question ou d'un feedback (glissement + fondu) */
+@keyframes quiz-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+.quiz-enter {
+  animation: quiz-enter 200ms ease-out both;
+}
+
+/* Quiz : pop de la bonne réponse et allumage des ticks de série */
+@keyframes quiz-pop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.quiz-pop {
+  animation: quiz-pop 250ms ease-out both;
 }
 
 @media (prefers-reduced-motion: reduce) {

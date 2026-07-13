@@ -8,6 +8,11 @@ export type ChapterStatusDb =
   | "revise"
   | "maitrise";
 
+export type QuestionTypeDb = "qcm" | "ouverte" | "mini_cas";
+export type QuestionStateDb = "active" | "signalee";
+export type DocumentStatusDb = "uploaded" | "generating" | "ready" | "error";
+export type ReviewStateDb = "new" | "learning" | "review" | "relearning";
+
 interface Table<Row, Insert> {
   Row: Row;
   Insert: Insert;
@@ -142,6 +147,118 @@ export interface Database {
           annale_ref?: string | null;
           feeling?: number | null;
           comment?: string | null;
+        }
+      >;
+      documents: Table<
+        {
+          id: string;
+          user_id: string;
+          subject_id: string;
+          chapter_id: string | null;
+          storage_path: string;
+          filename: string;
+          anthropic_file_id: string | null;
+          status: DocumentStatusDb;
+          error_message: string | null;
+          created_at: string;
+        },
+        {
+          id?: string;
+          user_id: string;
+          subject_id: string;
+          chapter_id?: string | null;
+          storage_path: string;
+          filename: string;
+          anthropic_file_id?: string | null;
+          status?: DocumentStatusDb;
+          error_message?: string | null;
+          created_at?: string;
+        }
+      >;
+      questions: Table<
+        {
+          id: string;
+          user_id: string;
+          chapter_id: string;
+          document_id: string | null;
+          qtype: QuestionTypeDb;
+          payload: unknown;
+          status: QuestionStateDb;
+          created_at: string;
+        },
+        {
+          id?: string;
+          user_id: string;
+          chapter_id: string;
+          document_id?: string | null;
+          qtype: QuestionTypeDb;
+          payload: unknown;
+          status?: QuestionStateDb;
+          created_at?: string;
+        }
+      >;
+      question_reviews: Table<
+        {
+          id: string;
+          user_id: string;
+          question_id: string;
+          state: ReviewStateDb;
+          stability: number;
+          difficulty: number;
+          reps: number;
+          lapses: number;
+          last_rating: number | null;
+          due_at: string;
+          last_reviewed_at: string | null;
+        },
+        {
+          id?: string;
+          user_id: string;
+          question_id: string;
+          state?: ReviewStateDb;
+          stability?: number;
+          difficulty?: number;
+          reps?: number;
+          lapses?: number;
+          last_rating?: number | null;
+          due_at?: string;
+          last_reviewed_at?: string | null;
+        }
+      >;
+      question_attempts: Table<
+        {
+          id: string;
+          user_id: string;
+          session_id: string | null;
+          question_id: string;
+          rating: number;
+          answered_at: string;
+        },
+        {
+          id?: string;
+          user_id: string;
+          session_id?: string | null;
+          question_id: string;
+          rating: number;
+          answered_at?: string;
+        }
+      >;
+      quiz_sessions: Table<
+        {
+          id: string;
+          user_id: string;
+          started_at: string;
+          ended_at: string | null;
+          answered: number;
+          correct: number;
+        },
+        {
+          id?: string;
+          user_id: string;
+          started_at?: string;
+          ended_at?: string | null;
+          answered?: number;
+          correct?: number;
         }
       >;
     };

@@ -35,7 +35,7 @@ const LEGACY_MILESTONE_TITLES = new Set([
   "Civil : tout fiché",
   "5 annales de synthèse faites",
   "Procédure : tout fiché",
-  "Tout révisé — début sprint final",
+  "Tout révisé - début sprint final",
 ]);
 
 function shortDate(iso: string) {

@@ -1,5 +1,5 @@
 /**
- * Beranis — rythme calé sur le programme officiel Pré-Barreau.
+ * Beranis - rythme calé sur le programme officiel Pré-Barreau.
  * Remplace le modèle linéaire de progress.ts pour expectedProgress/pace.
  * subjectProgress, STATUS_*, daysUntil et paceLabel restent inchangés.
  *
@@ -81,7 +81,7 @@ export type ProgramPace =
 /**
  * Écart en jours par rapport au programme : on cherche la date à laquelle
  * l'avancement réel était/sera attendu, et on compare à aujourd'hui.
- * Recherche par balayage jour à jour — trivial et suffisant (≈ 70 jours).
+ * Recherche par balayage jour à jour - trivial et suffisant (≈ 70 jours).
  */
 export function programPace(
   chapters: ProgramChapter[],

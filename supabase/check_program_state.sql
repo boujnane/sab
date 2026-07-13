@@ -77,6 +77,6 @@ where title in (
   'Civil : tout fiché',
   '5 annales de synthèse faites',
   'Procédure : tout fiché',
-  'Tout révisé — début sprint final'
+  'Tout révisé - début sprint final'
 )
 order by due_date;

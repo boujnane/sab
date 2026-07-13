@@ -6,23 +6,28 @@ import LineSidebar from "@/components/LineSidebar";
 
 const NAV_ITEMS = [
   { label: "cockpit", href: "/" },
+  { label: "quiz", href: "/quiz" },
   { label: "timeline", href: "/timeline" },
   { label: "synthèse", href: "/synthese" },
 ];
 
-function activeIndex(pathname: string) {
-  if (pathname.startsWith("/timeline")) return 1;
-  if (pathname.startsWith("/synthese")) return 2;
-  return 0;
+const ADMIN_ITEM = { label: "admin", href: "/admin" };
+
+function activeIndex(pathname: string, items: { href: string }[]) {
+  const index = items.findIndex(
+    (item) => item.href !== "/" && pathname.startsWith(item.href),
+  );
+  return index === -1 ? 0 : index;
 }
 
-export function AppLineSidebar() {
+export function AppLineSidebar({ showAdmin = false }: { showAdmin?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
+  const items = showAdmin ? [...NAV_ITEMS, ADMIN_ITEM] : NAV_ITEMS;
 
   return (
     <LineSidebar
-      items={NAV_ITEMS.map((item) => item.label)}
+      items={items.map((item) => item.label)}
       accentColor="var(--color-petale-500)"
       textColor="var(--color-plum-700)"
       markerColor="var(--color-plum-200)"
@@ -38,8 +43,8 @@ export function AppLineSidebar() {
       itemGap={18}
       fontSize={0.95}
       smoothing={120}
-      defaultActive={activeIndex(pathname)}
-      onItemClick={(index) => router.push(NAV_ITEMS[index].href)}
+      defaultActive={activeIndex(pathname, items)}
+      onItemClick={(index) => router.push(items[index].href)}
     />
   );
 }

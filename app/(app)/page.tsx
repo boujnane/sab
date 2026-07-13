@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { CountdownHero, type ExamVM } from "@/components/countdown-hero";
@@ -48,7 +49,7 @@ const LEGACY_MILESTONE_TITLES = new Set([
   "Civil : tout fiché",
   "5 annales de synthèse faites",
   "Procédure : tout fiché",
-  "Tout révisé — début sprint final",
+  "Tout révisé - début sprint final",
 ]);
 
 function fullLabel(name: string, iso: string, durationMin: number) {
@@ -89,6 +90,8 @@ export default async function Dashboard({
     { data: milestones, error: milestonesError },
     { data: logs, error: logsError },
     { data: assignments, error: assignmentsError },
+    { data: quizQuestions },
+    { data: quizReviews },
   ] = await Promise.all([
     supabase.from("subjects").select("*").order("sort_order"),
     supabase.from("chapters").select("*").order("sort_order"),
@@ -104,6 +107,8 @@ export default async function Dashboard({
       .select("trained_on")
       .order("trained_on", { ascending: false }),
     supabase.from("assignments").select("*").order("due_date"),
+    supabase.from("questions").select("id").eq("status", "active"),
+    supabase.from("question_reviews").select("question_id, due_at"),
   ]);
 
   const fetchError =
@@ -229,6 +234,15 @@ export default async function Dashboard({
     .sort((a, b) => a.dueDateIso.localeCompare(b.dueDateIso))
     .slice(0, 3);
 
+  const quizTotal = quizQuestions?.length ?? 0;
+  const nowIso = new Date().toISOString();
+  const reviewedIds = new Set(
+    (quizReviews ?? []).map((r) => r.question_id),
+  );
+  const quizDue =
+    (quizReviews ?? []).filter((r) => r.due_at <= nowIso).length +
+    (quizQuestions ?? []).filter((q) => !reviewedIds.has(q.id)).length;
+
   const footerBands = (
     <FooterBands
       milestones={upcomingDeadlines}
@@ -247,6 +261,32 @@ export default async function Dashboard({
         <CountdownHero exams={exams} todayIso={todayIso} railInSidebar />
 
         <ProgramSwitch active={selectedProgram} />
+
+        {quizTotal > 0 && (
+          <section
+            aria-label="Quiz"
+            className="border-t-2 border-plum-700 pt-2.5"
+          >
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <div className="flex items-baseline gap-3">
+                <h2 className="text-sm font-medium text-plum-950">Quiz</h2>
+                <span className="font-mono text-xs text-plum-700">
+                  {quizDue > 0
+                    ? `${quizDue} question${quizDue > 1 ? "s" : ""} aujourd'hui`
+                    : "tout est à jour"}
+                </span>
+              </div>
+              {quizDue > 0 && (
+                <Link
+                  href="/quiz?mode=jour"
+                  className="rounded-[var(--radius)] bg-petale-500 px-3 py-1.5 text-xs font-medium text-white transition-colors duration-150 hover:bg-petale-600"
+                >
+                  Session de 10 min
+                </Link>
+              )}
+            </div>
+          </section>
+        )}
 
         <WeekBlock
           mode={isRevisionPhase ? "revision" : "programme"}

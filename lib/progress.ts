@@ -1,5 +1,5 @@
 /**
- * Beranis — logique d'avancement et d'écart de rythme.
+ * Beranis - logique d'avancement et d'écart de rythme.
  * Module pur : aucune dépendance, aucune I/O. Ne pas y importer Supabase.
  * Les dates sont manipulées en jours UTC entiers pour éviter tout bug de fuseau.
  */

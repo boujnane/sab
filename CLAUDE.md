@@ -1,4 +1,4 @@
-# Beranis — cockpit de révision CRFPA
+# Beranis - cockpit de révision CRFPA
 
 Application de suivi de révision pour une seule utilisatrice, candidate au
 CRFPA session septembre 2026, spécialité droit civil. L'objectif n'est pas de
@@ -75,7 +75,7 @@ linéaire.
 
 ## Routes V1
 
-### `/` — cockpit quotidien
+### `/` - cockpit quotidien
 
 Premier écran utile, dense et lisible en quelques secondes :
 
@@ -93,13 +93,13 @@ Premier écran utile, dense et lisible en quelques secondes :
 En période de révision, `Cette semaine` devient `période de révision` et montre
 les sujets transversaux + chapitres faibles.
 
-### `/matieres/[slug]` — table de travail
+### `/matieres/[slug]` - table de travail
 
 Liste compacte des chapitres d'une matière. Le geste principal est le
 `StatusStepper` : tap sur la ligne, choix du statut, mutation optimiste, rollback
 et toast d'erreur si échec.
 
-### `/timeline` — contrôle secondaire
+### `/timeline` - contrôle secondaire
 
 La timeline n'est pas une page décorative. Elle montre :
 
@@ -111,7 +111,7 @@ La timeline n'est pas une page décorative. Elle montre :
 Si la base active n'a pas `program_week` ou `assignments`, afficher un état de
 données manquantes au lieu d'une courbe plate mensongère.
 
-### `/synthese` — journal compact
+### `/synthese` - journal compact
 
 Ajout d'un entraînement : date, durée, annale, ressenti, commentaire. Liste
 simple, pas de timer en V1.

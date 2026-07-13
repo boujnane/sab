@@ -1,4 +1,4 @@
--- 002 — Alignement sur le programme officiel Pré-Barreau (formation estivale 2026)
+-- 002 - Alignement sur le programme officiel Pré-Barreau (formation estivale 2026)
 
 -- Semaine du programme où le chapitre est couvert (1..7, null = hors programme)
 alter table chapters add column program_week int check (program_week between 1 and 7);
@@ -27,5 +27,5 @@ create policy "own assignments" on assignments
 delete from milestones where title in (
   'Obligations : tout lu', 'Civil : tout lu', 'Obligations : tout fiché',
   'Procédure : tout lu', 'Civil : tout fiché', '5 annales de synthèse faites',
-  'Procédure : tout fiché', 'Tout révisé — début sprint final'
+  'Procédure : tout fiché', 'Tout révisé - début sprint final'
 );

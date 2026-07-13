@@ -18,7 +18,7 @@ interface Props {
 /**
  * Hero du dashboard : le countdown de la prochaine épreuve en Instrument
  * Serif italique, adossé au rail mono des quatre épreuves. La densité du
- * rail équilibre la respiration du chiffre — ne pas les séparer.
+ * rail équilibre la respiration du chiffre - ne pas les séparer.
  */
 export function CountdownHero({ exams, todayIso, railInSidebar }: Props) {
   const next =

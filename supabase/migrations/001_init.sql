@@ -1,4 +1,4 @@
--- Prétoire — schéma V1
+-- Prétoire - schéma V1
 -- Toutes les tables portent user_id + RLS "propriétaire uniquement".
 
 create type chapter_status as enum ('non_vu', 'lu', 'fiche', 'revise', 'maitrise');

@@ -3,7 +3,7 @@ import type { ExamVM } from "@/components/countdown-hero";
 
 /**
  * Rail mono des quatre épreuves. Vit sous le hero sur mobile, dans la
- * sidebar sticky sur desktop — même composant aux deux endroits.
+ * sidebar sticky sur desktop - même composant aux deux endroits.
  */
 export function ExamRail({
   exams,

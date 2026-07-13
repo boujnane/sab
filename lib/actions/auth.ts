@@ -6,6 +6,52 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { ensureUserProgram } from "@/lib/user-program";
 
+function stringifyErrorValue(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (value == null) return "";
+
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
+
+function supabaseErrorDetails(error: unknown): string {
+  if (!error || typeof error !== "object") return stringifyErrorValue(error);
+
+  const record = error as Record<string, unknown>;
+  const parts = [
+    ["name", record.name],
+    ["status", record.status],
+    ["code", record.code],
+    ["message", record.message],
+    ["cause", record.cause],
+  ]
+    .map(([label, value]) => {
+      const text = stringifyErrorValue(value);
+      return text ? `${label}=${text}` : "";
+    })
+    .filter(Boolean);
+
+  if (parts.length > 0) return parts.join(" ");
+
+  try {
+    return JSON.stringify(error, Object.getOwnPropertyNames(error));
+  } catch {
+    return String(error);
+  }
+}
+
+function isExistingUserError(error: { message?: string } | null): boolean {
+  const message = String(error?.message ?? "").toLowerCase();
+  return (
+    message.includes("already registered") ||
+    message.includes("already been registered") ||
+    message.includes("already exists")
+  );
+}
+
 export async function sendLoginCode(
   _prev: { error?: string; sent?: boolean; email?: string } | undefined,
   formData: FormData,
@@ -24,36 +70,29 @@ export async function sendLoginCode(
       email_confirm: true,
     });
 
-    if (
-      createError &&
-      !createError.message.toLowerCase().includes("already registered") &&
-      !createError.message.toLowerCase().includes("already been registered") &&
-      !createError.message.toLowerCase().includes("already exists")
-    ) {
-      console.error(
-        "createUserForOtp:",
-        createError.code ?? createError.status,
-        createError.message,
-      );
+    if (createError && !isExistingUserError(createError)) {
+      const details = supabaseErrorDetails(createError);
+      console.error("createUserForOtp:", details);
       return {
-        error: `Création utilisateur refusée par Supabase : ${createError.message}`,
+        error: `Création utilisateur refusée par Supabase : ${details}`,
       };
     }
   }
 
   const { error } = await supabase.auth.signInWithOtp({
     email,
-    options: { shouldCreateUser: !admin },
+    options: { shouldCreateUser: true },
   });
 
   if (error) {
-    console.error("sendLoginCode:", error.code ?? error.status, error.message);
+    const details = supabaseErrorDetails(error);
+    console.error("sendLoginCode:", details);
     if (error.code === "over_email_send_rate_limit") {
       return {
         error: "Trop de codes demandés. Attends une minute avant de réessayer.",
       };
     }
-    return { error: `Envoi du code refusé par Supabase : ${error.message}` };
+    return { error: `Envoi du code refusé par Supabase : ${details}` };
   }
 
   return { sent: true, email };
