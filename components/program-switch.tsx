@@ -31,9 +31,12 @@ export function ProgramSwitch({
   pathname?: string;
 }) {
   return (
-    <nav aria-label="Programme" className="border-t-2 border-plum-700 pt-2.5">
+    <nav
+      aria-label="Programme"
+      className="min-w-0 overflow-hidden border-t-2 border-plum-700 pt-2.5"
+    >
       <h2 className="mb-2 font-mono text-xs text-plum-700">programme</h2>
-      <div className="grid grid-cols-2 gap-1 text-xs sm:inline-grid sm:grid-cols-4">
+      <div className="-mx-1 flex max-w-full snap-x gap-1 overflow-x-auto px-1 pb-1 text-xs [scrollbar-width:none] sm:mx-0 sm:inline-flex sm:px-0 sm:pb-0 [&::-webkit-scrollbar]:hidden">
         {PROGRAM_OPTIONS.map((option) => {
           const href =
             option.value === "all"
@@ -48,7 +51,7 @@ export function ProgramSwitch({
               aria-current={selected ? "page" : undefined}
               title={option.label}
               className={cn(
-                "min-h-9 rounded-[var(--radius)] border px-2.5 py-2 text-center font-mono transition-colors duration-150",
+                "min-h-10 min-w-[6.75rem] snap-start rounded-[var(--radius)] border px-3 py-2 text-center font-mono transition-colors duration-150 sm:min-w-0",
                 selected
                   ? "border-petale-500 bg-petale-50 text-petale-700"
                   : "border-plum-200 text-plum-700 hover:bg-plum-50 hover:text-plum-950",

@@ -129,7 +129,7 @@ export function TimelineRoadmap({
         </p>
       </div>
 
-      <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 border-y border-plum-200 py-3 lg:grid-cols-4">
+      <dl className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3 border-y border-plum-200 py-3 lg:grid-cols-4">
         {summary.map((item) => (
           <div key={item.label} className="flex items-baseline justify-between gap-3">
             <dt className="font-mono text-xs text-plum-700">{item.label}</dt>
@@ -155,7 +155,7 @@ export function TimelineRoadmap({
                 </p>
               </div>
 
-              <ol className="grid overflow-x-auto border-y border-plum-100 pb-1 md:grid-cols-4 xl:grid-cols-[repeat(8,minmax(8.25rem,1fr))]">
+              <ol className="-mx-3 flex snap-x overflow-x-auto border-y border-plum-100 px-3 pb-2 [scrollbar-width:thin] sm:-mx-4 sm:px-4 md:mx-0 md:grid md:grid-cols-4 md:px-0 xl:grid-cols-[repeat(8,minmax(8.25rem,1fr))]">
                 {subjectAssignments.map((assignment) => {
                   const state = assignmentState(assignment, todayIso, currentWeek);
                   const isEvenWeek = assignment.weekNumber % 2 === 0;
@@ -164,7 +164,7 @@ export function TimelineRoadmap({
                     <li
                       key={assignment.id}
                       className={cn(
-                        "min-h-40 min-w-36 border-l border-t-[3px] border-l-plum-100 px-3 py-3 first:border-l-0",
+                        "min-h-40 min-w-[11rem] snap-start border-l border-t-[3px] border-l-plum-100 px-3 py-3 first:border-l-0 md:min-w-0",
                         isEvenWeek ? "bg-plum-50" : "bg-[var(--surface)]",
                         STATE_CELL_CLASS[state],
                       )}

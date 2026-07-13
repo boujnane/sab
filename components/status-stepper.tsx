@@ -48,7 +48,7 @@ export function StatusStepper({ chapterId, chapterName, status }: Props) {
   }
 
   return (
-    <div className="relative">
+    <div className="relative min-w-0">
       <button
         ref={rowRef}
         type="button"
@@ -56,12 +56,12 @@ export function StatusStepper({ chapterId, chapterName, status }: Props) {
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={`${chapterName} : ${STATUS_LABEL[optimistic]}. Changer le statut`}
-        className="flex min-h-11 w-full items-center justify-between gap-4 rounded-[var(--radius)] px-2 py-1.5 text-left transition-colors duration-150 hover:bg-plum-100/60"
+        className="flex min-h-12 w-full items-center justify-between gap-3 rounded-[var(--radius)] px-2 py-2 text-left transition-colors duration-150 hover:bg-plum-100/60 sm:min-h-11 sm:gap-4 sm:py-1.5"
       >
         <span
-          className={
+          className={`min-w-0 flex-1 break-words leading-snug ${
             optimistic === "non_vu" ? "text-plum-700" : "text-plum-950"
-          }
+          }`}
         >
           {chapterName}
         </span>
@@ -90,7 +90,7 @@ export function StatusStepper({ chapterId, chapterName, status }: Props) {
           <ul
             role="listbox"
             aria-label={`Statut de ${chapterName}`}
-            className="absolute right-0 z-20 mt-1 w-44 rounded-[var(--radius)] border border-plum-200 bg-[var(--surface)] p-1 shadow-[var(--shadow-hairline)]"
+            className="absolute right-0 z-20 mt-1 w-52 rounded-[var(--radius)] border border-plum-200 bg-[var(--surface)] p-1 shadow-[var(--shadow-hairline)] sm:w-44"
           >
             {STATUS_ORDER.map((s, i) => (
               <li key={s}>
@@ -99,7 +99,7 @@ export function StatusStepper({ chapterId, chapterName, status }: Props) {
                   role="option"
                   aria-selected={s === optimistic}
                   onClick={() => select(s)}
-                  className={`flex min-h-10 w-full items-center justify-between rounded-md px-2.5 text-sm transition-colors duration-150 hover:bg-plum-50 ${
+                  className={`flex min-h-11 w-full items-center justify-between rounded-md px-2.5 text-sm transition-colors duration-150 hover:bg-plum-50 sm:min-h-10 ${
                     s === optimistic
                       ? "font-medium text-petale-600"
                       : "text-plum-950"

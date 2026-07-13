@@ -26,9 +26,9 @@ export function CountdownHero({ exams, todayIso, railInSidebar }: Props) {
   const d = daysUntil(todayIso, next.examDateIso);
 
   return (
-    <div className="grid items-end gap-5 sm:grid-cols-[1fr_240px]">
+    <div className="grid items-end gap-4 sm:grid-cols-[1fr_240px] sm:gap-5">
       <div>
-        <p className="font-display text-3xl italic leading-none text-plum-950">
+        <p className="font-display text-[clamp(3.25rem,20vw,4.25rem)] italic leading-none text-plum-950 sm:text-3xl">
           J−{d}
         </p>
         <p className="mt-1.5 text-xs text-plum-700">avant {next.fullLabel}</p>

@@ -20,9 +20,9 @@ export default async function SynthesePage() {
   const lastEntry = entries[0] ?? null;
 
   return (
-    <main className="mx-auto grid w-full max-w-[100rem] gap-7 px-6 py-8 md:grid-cols-[minmax(0,1fr)_340px] md:px-10 xl:px-12">
-      <div className="grid content-start gap-5">
-        <div className="flex items-baseline justify-between gap-3">
+    <main className="mx-auto grid w-full max-w-[100rem] gap-6 px-4 pb-6 pt-2 sm:px-6 md:px-8 md:pt-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:px-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:px-12">
+      <div className="grid min-w-0 content-start gap-5">
+        <div className="grid gap-3 sm:flex sm:items-baseline sm:justify-between">
           <div>
             <h1 className="font-display text-xl italic text-plum-950">
               Synthèse
@@ -67,7 +67,7 @@ export default async function SynthesePage() {
         )}
       </div>
 
-      <aside className="grid min-w-0 content-start gap-5 overflow-hidden rounded-[var(--radius)] border border-plum-200 bg-[var(--surface)] p-4 text-xs shadow-[var(--shadow-hairline)] md:sticky md:top-8 md:self-start">
+      <aside className="grid min-w-0 content-start gap-5 overflow-hidden rounded-[var(--radius)] border border-plum-200 bg-[var(--surface)] p-4 text-xs shadow-[var(--shadow-hairline)] lg:sticky lg:top-8 lg:self-start">
         <section className="min-w-0 border-t-2 border-plum-700 pt-2.5">
           <h2 className="mb-1.5 font-mono text-xs text-plum-700">journal</h2>
           <ul className="grid gap-1">

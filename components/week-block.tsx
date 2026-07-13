@@ -51,26 +51,26 @@ function AssignmentRow({ item }: { item: AssignmentVM }) {
   }
 
   return (
-    <li className="flex items-center gap-2.5">
+    <li className="flex min-h-10 min-w-0 items-center gap-2.5">
       <button
         type="button"
         role="checkbox"
         aria-checked={done}
         aria-label={item.title}
         onClick={toggle}
-        className={`h-4 w-4 shrink-0 rounded-full border transition-colors duration-150 ${
+        className={`h-5 w-5 shrink-0 rounded-full border transition-colors duration-150 sm:h-4 sm:w-4 ${
           done ? "border-petale-500 bg-petale-500" : "border-plum-300"
         }`}
       />
       <span
-        className={`flex-1 truncate ${
+        className={`min-w-0 flex-1 truncate ${
           done ? "text-plum-400 line-through" : "text-plum-950"
         }`}
       >
         {cleanAssignmentTitle(item.title)}
       </span>
-      <span className="font-mono text-plum-700">{item.subjectShort}</span>
-      <span className="font-mono text-plum-700">
+      <span className="shrink-0 font-mono text-plum-700">{item.subjectShort}</span>
+      <span className="shrink-0 font-mono text-plum-700">
         {shortDate(item.dueDateIso)}
       </span>
     </li>

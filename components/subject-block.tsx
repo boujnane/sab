@@ -44,16 +44,16 @@ export function SubjectBlock({
   return (
     <section
       aria-label={name}
-      className="rounded-[var(--radius)] border border-plum-200 bg-[var(--surface)] px-4 py-3.5 shadow-[var(--shadow-hairline)]"
+      className="rounded-[var(--radius)] border border-plum-200 bg-[var(--surface)] px-3 py-3.5 shadow-[var(--shadow-hairline)] sm:px-4"
     >
-      <header className="mb-2.5 flex items-baseline justify-between gap-3">
+      <header className="mb-2.5 grid gap-1.5 sm:flex sm:items-baseline sm:justify-between sm:gap-3">
         <Link
           href={`/matieres/${slug}`}
           className="text-md font-medium text-plum-950 hover:text-petale-600"
         >
           {name}
         </Link>
-        <span className="flex items-baseline gap-2.5">
+        <span className="flex items-baseline justify-between gap-2.5 sm:justify-start">
           <span className={`font-mono text-xs ${PACE_CLASS[p.kind]}`}>
             {paceLabel(p)}
           </span>
@@ -74,9 +74,9 @@ export function SubjectBlock({
         />
       </div>
 
-      <ul className="grid gap-x-6 sm:grid-cols-2">
+      <ul className="grid min-w-0 gap-x-6 sm:grid-cols-2">
         {chapters.map((c) => (
-          <li key={c.id}>
+          <li key={c.id} className="min-w-0">
             <StatusStepper
               chapterId={c.id}
               chapterName={c.name}

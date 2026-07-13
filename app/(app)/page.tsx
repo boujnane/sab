@@ -241,9 +241,9 @@ export default async function Dashboard({
   );
 
   return (
-    <main className="mx-auto grid w-full max-w-[100rem] gap-7 px-6 py-8 md:grid-cols-[minmax(0,1fr)_340px] md:px-10 xl:px-12">
+    <main className="mx-auto grid w-full max-w-[100rem] gap-6 px-4 pb-6 pt-2 sm:px-6 md:px-8 md:pt-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:px-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:px-12">
       {/* colonne principale : hero (chiffre seul sur desktop) + semaine + matières */}
-      <div className="grid content-start gap-5">
+      <div className="grid min-w-0 content-start gap-5">
         <CountdownHero exams={exams} todayIso={todayIso} railInSidebar />
 
         <ProgramSwitch active={selectedProgram} />
@@ -289,7 +289,7 @@ export default async function Dashboard({
       </div>
 
       {/* sidebar : sous le contenu en mobile, sticky à droite en desktop */}
-      <aside className="grid min-w-0 content-start gap-5 overflow-hidden rounded-[var(--radius)] border border-plum-200 bg-[var(--surface)] p-4 text-xs shadow-[var(--shadow-hairline)] md:sticky md:top-8 md:self-start">
+      <aside className="grid min-w-0 content-start gap-5 overflow-hidden rounded-[var(--radius)] border border-plum-200 bg-[var(--surface)] p-4 text-xs shadow-[var(--shadow-hairline)] lg:sticky lg:top-8 lg:self-start">
         <section aria-label="Épreuves" className="min-w-0 border-t-2 border-ciel-500 pt-2.5">
           <h2 className="mb-1.5 font-mono text-xs text-ciel-600">épreuves</h2>
           <ExamRail exams={exams} todayIso={todayIso} />

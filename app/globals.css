@@ -93,6 +93,7 @@ body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 /* Chiffres tabulaires par défaut sur la mono (dates, compteurs, countdowns) */
