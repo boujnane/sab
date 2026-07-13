@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { ensureUserProgram } from "@/lib/user-program";
 
 export async function sendMagicLink(
   _prev: { error?: string; sent?: boolean; email?: string } | undefined,
@@ -54,6 +55,19 @@ export async function verifyCode(
   if (error) {
     console.error("verifyCode:", error.code ?? error.status, error.message);
     return { error: "Code invalide ou expiré. Réessaie." };
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return { error: "Session non créée. Réessaie." };
+
+  try {
+    await ensureUserProgram(supabase, user.id);
+  } catch (seedError) {
+    console.error("ensureUserProgram:", seedError);
+    return { error: "Connexion réussie, mais le programme n'a pas été initialisé." };
   }
 
   redirect("/");

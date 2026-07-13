@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 import { CountdownHero, type ExamVM } from "@/components/countdown-hero";
 import { ExamRail } from "@/components/exam-rail";
 import { FooterBands } from "@/components/footer-bands";
@@ -19,6 +21,7 @@ import {
   currentProgramWeek,
 } from "@/lib/program-pace";
 import { createClient } from "@/lib/supabase/server";
+import { ensureUserProgram } from "@/lib/user-program";
 
 export const dynamic = "force-dynamic";
 
@@ -103,6 +106,17 @@ export default async function Dashboard({
   ]);
 
   if (!subjects) return null;
+
+  if (subjects.length === 0) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) redirect("/connexion");
+
+    await ensureUserProgram(supabase, user.id);
+    redirect("/");
+  }
 
   const visibleExamSubjects = subjects.filter(
     (s) => selectedProgram === "all" || s.slug === selectedProgram,
