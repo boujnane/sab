@@ -16,10 +16,34 @@ export async function sendLoginCode(
   }
 
   const supabase = await createClient();
+  const admin = createAdminClient();
+
+  if (admin) {
+    const { error: createError } = await admin.auth.admin.createUser({
+      email,
+      email_confirm: true,
+    });
+
+    if (
+      createError &&
+      !createError.message.toLowerCase().includes("already registered") &&
+      !createError.message.toLowerCase().includes("already been registered") &&
+      !createError.message.toLowerCase().includes("already exists")
+    ) {
+      console.error(
+        "createUserForOtp:",
+        createError.code ?? createError.status,
+        createError.message,
+      );
+      return {
+        error: `Création utilisateur refusée par Supabase : ${createError.message}`,
+      };
+    }
+  }
 
   const { error } = await supabase.auth.signInWithOtp({
     email,
-    options: { shouldCreateUser: true },
+    options: { shouldCreateUser: !admin },
   });
 
   if (error) {
@@ -29,7 +53,7 @@ export async function sendLoginCode(
         error: "Trop de codes demandés. Attends une minute avant de réessayer.",
       };
     }
-    return { error: "La modification n'a pas été enregistrée. Réessaie." };
+    return { error: `Envoi du code refusé par Supabase : ${error.message}` };
   }
 
   return { sent: true, email };
