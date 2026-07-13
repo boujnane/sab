@@ -20,6 +20,7 @@ import {
   PROGRAM_START,
   currentProgramWeek,
 } from "@/lib/program-pace";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { ensureUserProgram } from "@/lib/user-program";
 
@@ -83,11 +84,11 @@ export default async function Dashboard({
   const selectedProgram = parseProgramFilter((await searchParams).programme);
 
   const [
-    { data: subjects },
-    { data: chapters },
-    { data: milestones },
-    { data: logs },
-    { data: assignments },
+    { data: subjects, error: subjectsError },
+    { data: chapters, error: chaptersError },
+    { data: milestones, error: milestonesError },
+    { data: logs, error: logsError },
+    { data: assignments, error: assignmentsError },
   ] = await Promise.all([
     supabase.from("subjects").select("*").order("sort_order"),
     supabase.from("chapters").select("*").order("sort_order"),
@@ -105,16 +106,26 @@ export default async function Dashboard({
     supabase.from("assignments").select("*").order("due_date"),
   ]);
 
-  if (!subjects) return null;
+  const fetchError =
+    subjectsError ?? chaptersError ?? milestonesError ?? logsError ?? assignmentsError;
 
-  if (subjects.length === 0) {
+  if (fetchError) {
+    console.error("dashboard fetch:", fetchError);
+    throw new Error(
+      "Impossible de charger le programme. Vérifie les migrations Supabase.",
+    );
+  }
+
+  if (!subjects || !chapters || !assignments) return null;
+
+  if (subjects.length === 0 || chapters.length === 0 || assignments.length === 0) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) redirect("/connexion");
 
-    await ensureUserProgram(supabase, user.id);
+    await ensureUserProgram(createAdminClient() ?? supabase, user.id);
     redirect("/");
   }
 

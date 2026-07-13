@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 
-import { sendMagicLink, verifyCode } from "@/lib/actions/auth";
+import { sendLoginCode, verifyCode } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,7 @@ export default function ConnexionPage() {
     setError(null);
     const value = String(formData.get("email") ?? "").trim();
     startTransition(async () => {
-      const result = await sendMagicLink(undefined, formData);
+      const result = await sendLoginCode(undefined, formData);
       if (result.error) {
         setError(result.error);
       } else {

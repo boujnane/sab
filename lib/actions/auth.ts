@@ -2,10 +2,11 @@
 
 import { redirect } from "next/navigation";
 
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { ensureUserProgram } from "@/lib/user-program";
 
-export async function sendMagicLink(
+export async function sendLoginCode(
   _prev: { error?: string; sent?: boolean; email?: string } | undefined,
   formData: FormData,
 ) {
@@ -22,7 +23,7 @@ export async function sendMagicLink(
   });
 
   if (error) {
-    console.error("sendMagicLink:", error.code ?? error.status, error.message);
+    console.error("sendLoginCode:", error.code ?? error.status, error.message);
     if (error.code === "over_email_send_rate_limit") {
       return {
         error: "Trop de codes demandés. Attends une minute avant de réessayer.",
@@ -64,10 +65,13 @@ export async function verifyCode(
   if (!user) return { error: "Session non créée. Réessaie." };
 
   try {
-    await ensureUserProgram(supabase, user.id);
+    await ensureUserProgram(createAdminClient() ?? supabase, user.id);
   } catch (seedError) {
     console.error("ensureUserProgram:", seedError);
-    return { error: "Connexion réussie, mais le programme n'a pas été initialisé." };
+    return {
+      error:
+        "Connexion réussie, mais le programme n'a pas été initialisé. Vérifie la migration Supabase 002 et SUPABASE_SERVICE_ROLE_KEY sur Vercel.",
+    };
   }
 
   redirect("/");

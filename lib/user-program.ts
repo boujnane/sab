@@ -102,24 +102,53 @@ export async function ensureUserProgram(supabase: DbClient, userId: string) {
   // un nouveau programme : on instancie le même référentiel pour ce compte.
   const { data: existingSubjects, error: existingError } = await supabase
     .from("subjects")
-    .select("id")
-    .eq("user_id", userId)
-    .limit(1);
+    .select("id, slug")
+    .eq("user_id", userId);
 
   if (existingError) throw existingError;
-  if (existingSubjects.length > 0) return;
 
-  const { data: subjects, error: subjectsError } = await supabase
-    .from("subjects")
-    .insert(SUBJECTS.map((subject) => ({ ...subject, user_id: userId })))
-    .select("id, slug");
+  let subjects = existingSubjects ?? [];
 
-  if (subjectsError) throw subjectsError;
+  const missingSubjectSlugs = SUBJECTS.filter(
+    (subject) => !subjects.some((existing) => existing.slug === subject.slug),
+  );
+
+  if (missingSubjectSlugs.length > 0) {
+    const { data: upsertedSubjects, error: subjectsError } = await supabase
+      .from("subjects")
+      .upsert(SUBJECTS.map((subject) => ({ ...subject, user_id: userId })), {
+        onConflict: "user_id,slug",
+      })
+      .select("id, slug");
+
+    if (subjectsError) throw subjectsError;
+    subjects = upsertedSubjects;
+  }
+
+  if (subjects.length < SUBJECTS.length) {
+    throw new Error("Programme incomplet : matières manquantes.");
+  }
 
   const subjectIdBySlug = new Map(subjects.map((subject) => [subject.slug, subject.id]));
 
-  const { error: chaptersError } = await supabase.from("chapters").insert(
-    CHAPTERS.map(([slug, name, pdfRef, weight, programWeek, sortOrder]) => ({
+  const { data: existingChapters, error: existingChaptersError } = await supabase
+    .from("chapters")
+    .select("subject_id, name")
+    .eq("user_id", userId);
+
+  if (existingChaptersError) throw existingChaptersError;
+
+  const existingChapterKeys = new Set(
+    existingChapters.map((chapter) => `${chapter.subject_id}:${chapter.name}`),
+  );
+  const missingChapters = CHAPTERS.filter(([slug, name]) => {
+    const subjectId = subjectIdBySlug.get(slug);
+    return subjectId && !existingChapterKeys.has(`${subjectId}:${name}`);
+  });
+
+  if (missingChapters.length > 0) {
+    const { error: chaptersError } = await supabase.from("chapters").insert(
+      missingChapters.map(([slug, name, pdfRef, weight, programWeek, sortOrder]) => ({
       user_id: userId,
       subject_id: subjectIdBySlug.get(slug)!,
       name,
@@ -128,12 +157,32 @@ export async function ensureUserProgram(supabase: DbClient, userId: string) {
       program_week: programWeek,
       sort_order: sortOrder,
     })),
+    );
+
+    if (chaptersError) throw chaptersError;
+  }
+
+  const { data: existingAssignments, error: existingAssignmentsError } =
+    await supabase
+      .from("assignments")
+      .select("subject_id, week_number")
+      .eq("user_id", userId);
+
+  if (existingAssignmentsError) throw existingAssignmentsError;
+
+  const existingAssignmentKeys = new Set(
+    existingAssignments.map(
+      (assignment) => `${assignment.subject_id}:${assignment.week_number}`,
+    ),
   );
+  const missingAssignments = ASSIGNMENTS.filter(([slug, weekNumber]) => {
+    const subjectId = subjectIdBySlug.get(slug);
+    return subjectId && !existingAssignmentKeys.has(`${subjectId}:${weekNumber}`);
+  });
 
-  if (chaptersError) throw chaptersError;
-
-  const { error: assignmentsError } = await supabase.from("assignments").insert(
-    ASSIGNMENTS.map(([slug, weekNumber, title, pages, dueDate]) => ({
+  if (missingAssignments.length > 0) {
+    const { error: assignmentsError } = await supabase.from("assignments").insert(
+      missingAssignments.map(([slug, weekNumber, title, pages, dueDate]) => ({
       user_id: userId,
       subject_id: subjectIdBySlug.get(slug)!,
       week_number: weekNumber,
@@ -141,7 +190,8 @@ export async function ensureUserProgram(supabase: DbClient, userId: string) {
       pages,
       due_date: dueDate,
     })),
-  );
+    );
 
-  if (assignmentsError) throw assignmentsError;
+    if (assignmentsError) throw assignmentsError;
+  }
 }
