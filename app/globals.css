@@ -1,26 +1,234 @@
 @import "tailwindcss";
 
+/*
+  Beranis — design tokens.
+  3 gammes seulement : plum (structure), petale (accent), ciel (informatif).
+  Les gammes "baby-pink" et "icy-blue" de la palette source sont des doublons
+  volontairement écartés. Aucun gris Tailwind ne doit apparaître dans l'app.
+*/
+@theme {
+  /* plum — ex-thistle : structure, texte, surfaces, bordures */
+  --color-plum-50: #f3eef7;
+  --color-plum-100: #e8ddee;
+  --color-plum-200: #d1bade;
+  --color-plum-300: #ba98cd;
+  --color-plum-400: #a375bd;
+  --color-plum-500: #8b53ac;
+  --color-plum-600: #70428a;
+  --color-plum-700: #543267;
+  --color-plum-800: #382145;
+  --color-plum-900: #1c1122;
+  --color-plum-950: #140c18;
+
+  /* petale — ex-pastel-petal : accent unique, actions, "réel" */
+  --color-petale-50: #ffe5ef;
+  --color-petale-100: #ffcce0;
+  --color-petale-200: #ff99c0;
+  --color-petale-300: #ff66a1;
+  --color-petale-400: #ff3381;
+  --color-petale-500: #ff0062;
+  --color-petale-600: #cc004e;
+  --color-petale-700: #99003b;
+  --color-petale-800: #660027;
+  --color-petale-900: #330014;
+  --color-petale-950: #24000e;
+
+  /* ciel — ex-sky-blue : informatif (jalons, théorique), jamais une action */
+  --color-ciel-50: #e5f3ff;
+  --color-ciel-100: #cce6ff;
+  --color-ciel-200: #99ceff;
+  --color-ciel-300: #66b5ff;
+  --color-ciel-400: #339cff;
+  --color-ciel-500: #0084ff;
+  --color-ciel-600: #0069cc;
+  --color-ciel-700: #004f99;
+  --color-ciel-800: #003566;
+  --color-ciel-900: #001a33;
+  --color-ciel-950: #001224;
+
+  /* neutralisation : les gris Tailwind sont retirés du vocabulaire */
+  --color-gray-*: initial;
+  --color-slate-*: initial;
+  --color-zinc-*: initial;
+  --color-neutral-*: initial;
+  --color-stone-*: initial;
+
+  /* typo — familles injectées par next/font via variables */
+  --font-display: var(--font-instrument-serif), Georgia, serif;
+  --font-sans: var(--font-instrument-sans), system-ui, sans-serif;
+  --font-mono: var(--font-spline-mono), ui-monospace, monospace;
+
+  /* échelle typographique fermée */
+  --text-xs: 13px;
+  --text-base: 15px;
+  --text-md: 17px;
+  --text-lg: 22px;
+  --text-xl: 28px;
+  --text-2xl: 44px;
+  --text-3xl: 68px;
+
+  /* forme */
+  --radius: 10px;
+  --shadow-hairline: 0 1px 2px rgb(28 17 34 / 0.06);
+}
+
+/* Sémantique applicative */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --bg: var(--color-plum-50);
+  --surface: #fdfcfe; /* blanc très légèrement violacé, jamais #fff pur */
+  --ink: var(--color-plum-950);
+  --ink-2: var(--color-plum-700);
+  --line: var(--color-plum-200);
+  --accent: var(--color-petale-500);
+  --info: var(--color-ciel-600);
+  /* écart de rythme */
+  --pace-ahead: var(--color-ciel-600);
+  --pace-behind: var(--color-petale-600);
+  --pace-ontrack: var(--color-plum-600);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Chiffres tabulaires par défaut sur la mono (dates, compteurs, countdowns) */
+.font-mono {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Focus clavier — unique style de focus de l'app */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Le seul dégradé autorisé : maturité du StatusStepper */
+.gradient-maturite {
+  background: linear-gradient(
+    90deg,
+    var(--color-plum-300),
+    var(--color-petale-500)
+  );
+}
+
+/* Croissance unique des barres d'avancement au chargement du dashboard */
+@keyframes grow {
+  from {
+    width: 0%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+  ---break---
+*/
+
+@theme inline {
+  --font-heading: var(--font-mono);
+  --font-mono: var(--font-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+  ---break---
+*/
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+/*
+  ---break---
+*/
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-mono;
+  }
 }
